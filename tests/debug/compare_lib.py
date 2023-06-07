@@ -174,6 +174,18 @@ def deploy_to_pipeline(args) -> None:
             key=lambda x: -(x[1][0] * x[1][1]),
         )
     )
+    print("======================= Starts Sampling =======================")
+    temperature_arr = tvm.runtime.ndarray.empty(shape=(), dtype="float32", device=primary_device)
+    temperature_arr.copyfrom(np.array(0.5, dtype="float32"))
+    logits = state.vm["softmax_with_temperature"](
+        logits, temperature_arr
+    )
+    print_as_table(
+        sorted(
+            state.cmp_instrument.time_eval_results.items(),
+            key=lambda x: -(x[1][0] * x[1][1]),
+        )
+    )        
     state.cmp_instrument.time_eval_results.clear()
 
 

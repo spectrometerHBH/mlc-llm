@@ -400,7 +400,6 @@ class LLMChat {
   std::vector<int32_t> GetInputTokens() {
     std::vector<int32_t> tokens;
     std::vector<std::string> prompts;
-
     if (this->total_seq_len_ == 0) {
       prompts = this->conversation_.GetPromptArray();
       if (this->conversation_.add_bos) {
@@ -508,11 +507,9 @@ class LLMChat {
       conversation_.AppendMessage(conversation_.roles[0], inp);
       conversation_.AppendReplyHeader(conversation_.roles[1]);
     }
-
     std::vector<int32_t> prompt_tokens = this->GetInputTokens();
     int64_t token_len = static_cast<int64_t>(prompt_tokens.size());
     if (token_len == 0) return;
-
     auto tstart = std::chrono::high_resolution_clock::now();
 
     int32_t new_seq_len = total_seq_len_ + token_len;
@@ -620,6 +617,7 @@ class LLMChat {
    * \brief Sample output token from logits on device
    */
   int32_t SampleTokenFromLogits(NDArray logits_on_device, float temperature, float top_p) {
+    auto tstart = std::chrono::high_resolution_clock::now();
     if (repetition_penalty_ == 1.0f) {
       if (temperature_ < 1e-6f) {
         this->UpdateLogitsOrProbOnCPUSync(logits_on_device);
@@ -633,7 +631,6 @@ class LLMChat {
         this->ApplySoftmaxWithTemperatureOnCPU();
       }
     }
-    auto tstart = std::chrono::high_resolution_clock::now();
     int next_token;
     if (temperature_ < 1e-6f) {
       next_token = this->SampleFromLogitsOnCPU();
