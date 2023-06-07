@@ -139,7 +139,9 @@ class LLMChat {
     os << "prefill: " << std::setprecision(1) << std::fixed
        << this->prefill_total_tokens / this->prefill_total_time << " tok/s"
        << ", decode: " << std::setprecision(1) << std::fixed
-       << this->decode_total_tokens / this->decode_total_time << " tok/s";
+       << this->decode_total_tokens / this->decode_total_time << " tok/s"
+       << ", sample: " << std::setprecision(1) << std::fixed
+        << (100) * this->sample_total_time / this->decode_total_time << "%";
     return os.str();
   }
 
