@@ -535,11 +535,15 @@ class LLMChat {
     NDArray logits_on_device = this->Forward({last_token}, total_seq_len_ + 1);
     total_seq_len_ += 1;
 
+    auto tend0 = std::chrono::high_resolution_clock::now();
+
     int32_t next_token = this->SampleTokenFromLogits(logits_on_device, temperature_, top_p_);
 
     auto tend = std::chrono::high_resolution_clock::now();
 
     this->decode_total_time += static_cast<double>((tend - tstart).count()) / 1e9;
+    LOG(INFO) << "decode time: " << static_cast<double>((tend - tstart).count()) / 1e6 << " ms";
+    LOG(INFO) << "forward time: " << static_cast<double>((tend0 - tstart).count()) / 1e6 << " ms";
     this->decode_total_tokens += 1;
     this->ProcessNextToken(next_token);
   }
@@ -639,6 +643,8 @@ class LLMChat {
     }
     auto tend = std::chrono::high_resolution_clock::now();
     this->sample_total_time += static_cast<double>((tend - tstart).count()) / 1e9;
+    std::cout << "sample time: " << static_cast<double>((tend - tstart).count()) / 1e6 << " ms"
+              << std::endl;
     return next_token;
   }
 
