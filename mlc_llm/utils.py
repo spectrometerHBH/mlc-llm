@@ -26,6 +26,8 @@ def argparse_postproc_common(args: argparse.Namespace) -> None:
                 args.device_name = "cuda"
             elif tvm.metal().exist:
                 args.device_name = "metal"
+            elif tvm.rocm().exist:
+                args.device_name = "rocm"
             elif tvm.vulkan().exist:
                 args.device_name = "vulkan"
             elif tvm.opencl().exist:

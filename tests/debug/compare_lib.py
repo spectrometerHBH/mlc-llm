@@ -53,7 +53,7 @@ class LibCompare(LibCompareVMInstrument):
 
         if self.time_eval and name not in self.time_eval_results:
             res = self.mod.time_evaluator(
-                name, self.device, number=20, repeat=3#, cache_flush_bytes=256 * 10**6
+                name, self.device, number=100, repeat=3
             )(*new_args)
             self.time_eval_results[name] = (res.mean, 1)
             print(f"Time-eval result {name} on {self.device}: {res}")
